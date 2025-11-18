@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -54,6 +54,29 @@ export default function DinheiroFinancas() {
     currentAmount: ""
   })
 
+  // Carregar dados do localStorage ao montar
+  useEffect(() => {
+    const savedTransactions = localStorage.getItem('financas-transactions')
+    const savedGoals = localStorage.getItem('financas-goals')
+
+    if (savedTransactions) setTransactions(JSON.parse(savedTransactions))
+    if (savedGoals) setGoals(JSON.parse(savedGoals))
+  }, [])
+
+  // Salvar transactions no localStorage
+  useEffect(() => {
+    if (transactions.length > 0) {
+      localStorage.setItem('financas-transactions', JSON.stringify(transactions))
+    }
+  }, [transactions])
+
+  // Salvar goals no localStorage
+  useEffect(() => {
+    if (goals.length > 0) {
+      localStorage.setItem('financas-goals', JSON.stringify(goals))
+    }
+  }, [goals])
+
   const addTransaction = () => {
     if (newTransaction.amount && newTransaction.category) {
       setTransactions([...transactions, {
@@ -89,8 +112,17 @@ export default function DinheiroFinancas() {
     }
   }
 
-  const deleteTransaction = (id: string) => setTransactions(transactions.filter(t => t.id !== id))
-  const deleteGoal = (id: string) => setGoals(goals.filter(g => g.id !== id))
+  const deleteTransaction = (id: string) => {
+    const updated = transactions.filter(t => t.id !== id)
+    setTransactions(updated)
+    localStorage.setItem('financas-transactions', JSON.stringify(updated))
+  }
+
+  const deleteGoal = (id: string) => {
+    const updated = goals.filter(g => g.id !== id)
+    setGoals(updated)
+    localStorage.setItem('financas-goals', JSON.stringify(updated))
+  }
 
   const updateGoalProgress = (id: string, amount: number) => {
     setGoals(goals.map(goal => 

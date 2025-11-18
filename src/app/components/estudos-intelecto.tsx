@@ -36,6 +36,29 @@ export default function EstudosIntelecto() {
   const [timerSeconds, setTimerSeconds] = useState(0)
   const [currentSubject, setCurrentSubject] = useState("")
 
+  // Carregar dados do localStorage ao montar
+  useEffect(() => {
+    const savedBooks = localStorage.getItem('estudos-books')
+    const savedSessions = localStorage.getItem('estudos-sessions')
+
+    if (savedBooks) setBooks(JSON.parse(savedBooks))
+    if (savedSessions) setStudySessions(JSON.parse(savedSessions))
+  }, [])
+
+  // Salvar books no localStorage
+  useEffect(() => {
+    if (books.length > 0) {
+      localStorage.setItem('estudos-books', JSON.stringify(books))
+    }
+  }, [books])
+
+  // Salvar sessions no localStorage
+  useEffect(() => {
+    if (studySessions.length > 0) {
+      localStorage.setItem('estudos-sessions', JSON.stringify(studySessions))
+    }
+  }, [studySessions])
+
   useEffect(() => {
     let interval: NodeJS.Timeout
     if (timerRunning) {
@@ -65,12 +88,13 @@ export default function EstudosIntelecto() {
 
   const stopTimer = () => {
     if (timerSeconds > 0 && currentSubject.trim()) {
-      setStudySessions([...studySessions, {
+      const newSession = {
         id: Date.now().toString(),
         date: new Date().toLocaleDateString(),
         duration: timerSeconds,
         subject: currentSubject
-      }])
+      }
+      setStudySessions([...studySessions, newSession])
     }
     setTimerRunning(false)
     setTimerSeconds(0)
@@ -87,7 +111,11 @@ export default function EstudosIntelecto() {
     }
   }
 
-  const deleteBook = (id: string) => setBooks(books.filter(b => b.id !== id))
+  const deleteBook = (id: string) => {
+    const updated = books.filter(b => b.id !== id)
+    setBooks(updated)
+    localStorage.setItem('estudos-books', JSON.stringify(updated))
+  }
 
   const updateBookStatus = (id: string, status: Book["status"]) => {
     setBooks(books.map(book => book.id === id ? { ...book, status } : book))

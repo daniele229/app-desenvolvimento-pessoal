@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -43,6 +43,53 @@ export default function BelezaAutocuidado() {
   const [products, setProducts] = useState<Product[]>([])
   const [weeklyRoutine, setWeeklyRoutine] = useState<Routine[]>([])
   const [newProduct, setNewProduct] = useState({ name: "", category: "", frequency: "" })
+
+  // Carregar dados do localStorage ao montar
+  useEffect(() => {
+    const savedQuizCompleted = localStorage.getItem('beleza-quiz-completed')
+    const savedQuizAnswers = localStorage.getItem('beleza-quiz-answers')
+    const savedProducts = localStorage.getItem('beleza-products')
+    const savedRoutine = localStorage.getItem('beleza-routine')
+
+    if (savedQuizCompleted === 'true') {
+      setQuizCompleted(true)
+    }
+    if (savedQuizAnswers) {
+      setQuizAnswers(JSON.parse(savedQuizAnswers))
+    }
+    if (savedProducts) {
+      setProducts(JSON.parse(savedProducts))
+    }
+    if (savedRoutine) {
+      setWeeklyRoutine(JSON.parse(savedRoutine))
+    }
+  }, [])
+
+  // Salvar quiz completion no localStorage
+  useEffect(() => {
+    localStorage.setItem('beleza-quiz-completed', quizCompleted.toString())
+  }, [quizCompleted])
+
+  // Salvar quiz answers no localStorage
+  useEffect(() => {
+    if (quizAnswers.hairType || quizAnswers.skinType || quizAnswers.goals.length > 0) {
+      localStorage.setItem('beleza-quiz-answers', JSON.stringify(quizAnswers))
+    }
+  }, [quizAnswers])
+
+  // Salvar products no localStorage
+  useEffect(() => {
+    if (products.length > 0) {
+      localStorage.setItem('beleza-products', JSON.stringify(products))
+    }
+  }, [products])
+
+  // Salvar routine no localStorage
+  useEffect(() => {
+    if (weeklyRoutine.length > 0) {
+      localStorage.setItem('beleza-routine', JSON.stringify(weeklyRoutine))
+    }
+  }, [weeklyRoutine])
 
   const handleQuizSubmit = () => {
     if (quizAnswers.hairType && quizAnswers.skinType && quizAnswers.goals.length > 0) {
@@ -344,7 +391,10 @@ export default function BelezaAutocuidado() {
 
       <Button 
         variant="outline" 
-        onClick={() => setQuizCompleted(false)}
+        onClick={() => {
+          setQuizCompleted(false)
+          localStorage.setItem('beleza-quiz-completed', 'false')
+        }}
         className="w-full"
       >
         Refazer Quiz

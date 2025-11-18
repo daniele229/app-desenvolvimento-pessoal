@@ -14,6 +14,7 @@ import PerfilUsuario from "./components/perfil-usuario"
 import TarefasHabitos from "./components/tarefas-habitos"
 import Quiz from "./components/quiz"
 import ImprovementPlan from "./components/improvement-plan"
+import SalesPage from "./components/sales-page"
 import Auth from "./components/auth"
 import { supabase } from "@/lib/supabase"
 
@@ -50,7 +51,9 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [showQuiz, setShowQuiz] = useState(false)
   const [showPlan, setShowPlan] = useState(false)
+  const [showSales, setShowSales] = useState(false)
   const [showAuth, setShowAuth] = useState(false)
+  const [hasPurchased, setHasPurchased] = useState(false)
   const [improvementPlan, setImprovementPlan] = useState<ImprovementPlan | null>(null)
 
   useEffect(() => {
@@ -61,19 +64,13 @@ export default function Home() {
 
   const checkUser = async () => {
     try {
-      // Verificar se o Supabase está configurado
-      if (!supabase) {
-        console.warn("Supabase não configurado")
-        setShowQuiz(true)
-        setLoading(false)
-        return
-      }
-
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
         setUser(user)
+        setHasPurchased(true) // Simula que usuário autenticado já comprou
         setShowQuiz(false)
         setShowPlan(false)
+        setShowSales(false)
         setShowAuth(false)
       } else {
         setShowQuiz(true)
@@ -156,17 +153,15 @@ export default function Home() {
     
     // Salvar respostas do quiz (sem user_id por enquanto)
     try {
-      if (supabase) {
-        await supabase.from('quiz_responses').insert({
-          sleep_hours: quizData.sleep_hours,
-          exercise_frequency: quizData.exercise_frequency,
-          stress_level: quizData.stress_level,
-          study_hours: quizData.study_hours,
-          financial_control: quizData.financial_control,
-          self_care_routine: quizData.self_care_routine,
-          improvement_plan: plan
-        })
-      }
+      await supabase.from('quiz_responses').insert({
+        sleep_hours: quizData.sleep_hours,
+        exercise_frequency: quizData.exercise_frequency,
+        stress_level: quizData.stress_level,
+        study_hours: quizData.study_hours,
+        financial_control: quizData.financial_control,
+        self_care_routine: quizData.self_care_routine,
+        improvement_plan: plan
+      })
     } catch (error) {
       console.error("Erro ao salvar quiz:", error)
     }
@@ -177,6 +172,12 @@ export default function Home() {
 
   const handlePlanContinue = () => {
     setShowPlan(false)
+    setShowSales(true)
+  }
+
+  const handlePurchase = () => {
+    setHasPurchased(true)
+    setShowSales(false)
     setShowAuth(true)
   }
 
@@ -186,10 +187,9 @@ export default function Home() {
   }
 
   const handleLogout = async () => {
-    if (supabase) {
-      await supabase.auth.signOut()
-    }
+    await supabase.auth.signOut()
     setUser(null)
+    setHasPurchased(false)
     setShowQuiz(true)
   }
 
@@ -212,8 +212,37 @@ export default function Home() {
     return <ImprovementPlan plan={improvementPlan} onContinue={handlePlanContinue} />
   }
 
+  if (showSales) {
+    return <SalesPage onPurchase={handlePurchase} />
+  }
+
   if (showAuth) {
     return <Auth onSuccess={handleAuthSuccess} />
+  }
+
+  // Bloqueia acesso ao app se não comprou
+  if (!hasPurchased) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20 flex items-center justify-center p-4">
+        <Card className="max-w-md p-8 text-center">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+            <Sparkles className="w-8 h-8 text-white" />
+          </div>
+          <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-100">
+            Acesso Bloqueado
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            Para acessar o aplicativo completo, você precisa adquirir um plano.
+          </p>
+          <Button
+            onClick={() => setShowSales(true)}
+            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+          >
+            Ver Planos
+          </Button>
+        </Card>
+      </div>
+    )
   }
 
   return (

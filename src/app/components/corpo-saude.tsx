@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -41,6 +41,38 @@ export default function CorpoSaude() {
   const [newMeal, setNewMeal] = useState({ name: "", time: "", calories: "" })
   const [newProgress, setNewProgress] = useState({ weight: "", chest: "", waist: "", hips: "" })
 
+  // Carregar dados do localStorage ao montar
+  useEffect(() => {
+    const savedWorkouts = localStorage.getItem('corpo-workouts')
+    const savedMeals = localStorage.getItem('corpo-meals')
+    const savedProgress = localStorage.getItem('corpo-progress')
+
+    if (savedWorkouts) setWorkouts(JSON.parse(savedWorkouts))
+    if (savedMeals) setMeals(JSON.parse(savedMeals))
+    if (savedProgress) setProgress(JSON.parse(savedProgress))
+  }, [])
+
+  // Salvar workouts no localStorage
+  useEffect(() => {
+    if (workouts.length > 0) {
+      localStorage.setItem('corpo-workouts', JSON.stringify(workouts))
+    }
+  }, [workouts])
+
+  // Salvar meals no localStorage
+  useEffect(() => {
+    if (meals.length > 0) {
+      localStorage.setItem('corpo-meals', JSON.stringify(meals))
+    }
+  }, [meals])
+
+  // Salvar progress no localStorage
+  useEffect(() => {
+    if (progress.length > 0) {
+      localStorage.setItem('corpo-progress', JSON.stringify(progress))
+    }
+  }, [progress])
+
   const addWorkout = () => {
     if (newWorkout.name && newWorkout.exercises) {
       setWorkouts([...workouts, {
@@ -79,8 +111,17 @@ export default function CorpoSaude() {
     }
   }
 
-  const deleteWorkout = (id: string) => setWorkouts(workouts.filter(w => w.id !== id))
-  const deleteMeal = (id: string) => setMeals(meals.filter(m => m.id !== id))
+  const deleteWorkout = (id: string) => {
+    const updated = workouts.filter(w => w.id !== id)
+    setWorkouts(updated)
+    localStorage.setItem('corpo-workouts', JSON.stringify(updated))
+  }
+
+  const deleteMeal = (id: string) => {
+    const updated = meals.filter(m => m.id !== id)
+    setMeals(updated)
+    localStorage.setItem('corpo-meals', JSON.stringify(updated))
+  }
 
   const totalCalories = meals.reduce((sum, meal) => sum + meal.calories, 0)
   const calorieGoal = 2000

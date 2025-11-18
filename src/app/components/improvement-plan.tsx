@@ -2,7 +2,7 @@
 
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { CheckCircle2, TrendingUp, Target, Sparkles } from "lucide-react"
+import { CheckCircle2, TrendingUp, Target, Sparkles, Zap, Heart, Trophy, Star } from "lucide-react"
 
 interface ImprovementPlan {
   corpo: string[]
@@ -128,6 +128,88 @@ export default function ImprovementPlan({ plan, onContinue }: ImprovementPlanPro
             </Card>
           </div>
 
+          {/* Benefits Section */}
+          <Card className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 border-2 border-purple-200 dark:border-purple-800 mb-8">
+            <div className="p-6">
+              <h3 className="text-2xl font-bold text-center mb-6 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                Benefícios de Seguir Este Plano
+              </h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center flex-shrink-0">
+                    <Heart className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-800 dark:text-gray-100 mb-1">Mais Energia e Disposição</h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Melhore sua saúde física e mental com hábitos consistentes
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center flex-shrink-0">
+                    <Zap className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-800 dark:text-gray-100 mb-1">Redução do Estresse</h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Técnicas de meditação e mindfulness para uma mente mais tranquila
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center flex-shrink-0">
+                    <Sparkles className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-800 dark:text-gray-100 mb-1">Autoestima Elevada</h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Cuide de si mesmo e sinta-se mais confiante e radiante
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0">
+                    <Trophy className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-800 dark:text-gray-100 mb-1">Crescimento Pessoal</h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Desenvolva novas habilidades e expanda seu conhecimento
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center flex-shrink-0">
+                    <Star className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-800 dark:text-gray-100 mb-1">Estabilidade Financeira</h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Controle suas finanças e alcance seus objetivos financeiros
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center flex-shrink-0">
+                    <Target className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-800 dark:text-gray-100 mb-1">Vida Mais Organizada</h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Gerencie tarefas e hábitos de forma eficiente e produtiva
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+
           {/* CTA */}
           <div className="text-center">
             <Button
@@ -135,10 +217,10 @@ export default function ImprovementPlan({ plan, onContinue }: ImprovementPlanPro
               size="lg"
               className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-lg px-8"
             >
-              Criar conta para começar minha evolução
+              Comece sua evolução
             </Button>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-4">
-              Crie sua conta gratuita para salvar seu progresso e acompanhar sua evolução
+              Transforme sua vida com um plano personalizado e acompanhamento completo
             </p>
           </div>
         </div>

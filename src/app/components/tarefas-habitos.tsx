@@ -35,11 +35,6 @@ export default function TarefasHabitos() {
 
   const loadUserData = async () => {
     try {
-      if (!supabase) {
-        setLoading(false)
-        return
-      }
-
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
         setUserId(user.id)
@@ -54,8 +49,6 @@ export default function TarefasHabitos() {
   }
 
   const loadTarefas = async (uid: string) => {
-    if (!supabase) return
-
     const { data, error } = await supabase
       .from('tasks')
       .select('*')
@@ -72,8 +65,6 @@ export default function TarefasHabitos() {
   }
 
   const loadHabitos = async (uid: string) => {
-    if (!supabase) return
-
     const { data, error } = await supabase
       .from('habits')
       .select('*')
@@ -90,7 +81,7 @@ export default function TarefasHabitos() {
   }
 
   const adicionarTarefa = async () => {
-    if (novaTarefa.trim() && userId && supabase) {
+    if (novaTarefa.trim() && userId) {
       const { data, error } = await supabase
         .from('tasks')
         .insert({
@@ -109,8 +100,6 @@ export default function TarefasHabitos() {
   }
 
   const toggleTarefa = async (id: string) => {
-    if (!supabase) return
-
     const tarefa = tarefas.find(t => t.id === id)
     if (tarefa) {
       const { error } = await supabase
@@ -125,8 +114,6 @@ export default function TarefasHabitos() {
   }
 
   const removerTarefa = async (id: string) => {
-    if (!supabase) return
-
     const { error } = await supabase
       .from('tasks')
       .update({ texto: '[REMOVIDA]', concluida: true })
@@ -138,7 +125,7 @@ export default function TarefasHabitos() {
   }
 
   const adicionarHabito = async () => {
-    if (novoHabito.trim() && userId && supabase) {
+    if (novoHabito.trim() && userId) {
       const { data, error } = await supabase
         .from('habits')
         .insert({
@@ -157,8 +144,6 @@ export default function TarefasHabitos() {
   }
 
   const toggleDiaHabito = async (habitoId: string, diaIndex: number) => {
-    if (!supabase) return
-
     const habito = habitos.find(h => h.id === habitoId)
     if (habito) {
       const novosDias = [...habito.dias]
@@ -176,8 +161,6 @@ export default function TarefasHabitos() {
   }
 
   const removerHabito = async (id: string) => {
-    if (!supabase) return
-
     const { error } = await supabase
       .from('habits')
       .update({ nome: '[REMOVIDO]' })

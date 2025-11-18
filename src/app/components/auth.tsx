@@ -29,6 +29,10 @@ export default function Auth({ onSuccess }: AuthProps) {
     setLoading(true)
 
     try {
+      if (!supabase) {
+        throw new Error("Supabase não está configurado. Configure suas variáveis de ambiente.")
+      }
+
       if (isLogin) {
         // Login
         const { data, error } = await supabase.auth.signInWithPassword({

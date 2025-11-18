@@ -61,6 +61,14 @@ export default function Home() {
 
   const checkUser = async () => {
     try {
+      // Verificar se o Supabase está configurado
+      if (!supabase) {
+        console.warn("Supabase não configurado")
+        setShowQuiz(true)
+        setLoading(false)
+        return
+      }
+
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
         setUser(user)
@@ -148,15 +156,17 @@ export default function Home() {
     
     // Salvar respostas do quiz (sem user_id por enquanto)
     try {
-      await supabase.from('quiz_responses').insert({
-        sleep_hours: quizData.sleep_hours,
-        exercise_frequency: quizData.exercise_frequency,
-        stress_level: quizData.stress_level,
-        study_hours: quizData.study_hours,
-        financial_control: quizData.financial_control,
-        self_care_routine: quizData.self_care_routine,
-        improvement_plan: plan
-      })
+      if (supabase) {
+        await supabase.from('quiz_responses').insert({
+          sleep_hours: quizData.sleep_hours,
+          exercise_frequency: quizData.exercise_frequency,
+          stress_level: quizData.stress_level,
+          study_hours: quizData.study_hours,
+          financial_control: quizData.financial_control,
+          self_care_routine: quizData.self_care_routine,
+          improvement_plan: plan
+        })
+      }
     } catch (error) {
       console.error("Erro ao salvar quiz:", error)
     }
@@ -176,7 +186,9 @@ export default function Home() {
   }
 
   const handleLogout = async () => {
-    await supabase.auth.signOut()
+    if (supabase) {
+      await supabase.auth.signOut()
+    }
     setUser(null)
     setShowQuiz(true)
   }
